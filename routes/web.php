@@ -23,3 +23,21 @@ Route::get('editPost/{id}',[PostsController::class,'editPost'])->name('editPost'
 Route::put('updatePost/{id}',[PostsController::class,'updatePost'])->name('updatePost');
 
 Route::delete('deletePost/{id}',[PostsController::class,'deletePost'])->name('deletePost');
+
+Route::get('test',function(){
+    return view('test',['test'=>'this is test content passed through view']);
+});
+
+Route::get('layout', function () {
+    return view('layout');
+});
+
+Route::POST('searchPosts',[PostsController::class,'searchPosts'])->name('searchPosts');
+
+Route::delete('deleteAllPosts',[PostsController::class,'deleteAllPosts'])->name('deleteAllPosts');
+
+Route::delete('deleteAllPostsWithBackUp',[PostsController::class,'deleteAllPostsWithBackUp'])->name('deleteAllPostsWithBackUp');
+
+Route::post('restorePosts',[PostsController::class,'restorePosts'])->name('restorePosts');
+
+
