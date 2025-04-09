@@ -93,30 +93,57 @@
 
         .pagination {
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Center items horizontally */
+            align-items: center; /* Align items vertically */
+            gap: 10px; /* Add spacing between items */
             margin-top: 20px;
         }
 
-        .pagination a {
-            text-decoration: none;
-            color: #007BFF;
-            padding: 8px 12px;
-            margin: 0 5px;
-            border-radius: 5px;
-            font-size: 14px; /* Adjust font size for pagination numbers */
+        .pagination-item {
+            display: flex;
+            align-items: center; /* Ensure icons are vertically aligned */
         }
 
-        .pagination a:hover {
-            background-color: #e0f0ff;
+        .pagination-info {
+            font-size: 14px;
+            color: #333;
         }
 
-        .pagination .active {
-            background-color: #007BFF;
-            color: white;
+        .page-link,
+        .disabled-icon {
+            display: flex; /* Use flexbox for consistent alignment */
+            align-items: center; /* Vertically align content */
+            justify-content: center; /* Horizontally align content */
+            width: 30px; /* Fixed width for consistency */
+            height: 30px; /* Fixed height for consistency */
+            border-radius: 50%; /* Circular shape for better aesthetics */
+            background-color: transparent; /* Transparent background */
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .page-link:hover {
+            background-color: #e0f0ff; /* Light blue hover effect */
+            transform: scale(1.1); /* Slightly enlarge icon on hover */
+        }
+
+        .disabled-icon {
+            opacity: 0.5; /* Gray out disabled icons */
+            cursor: not-allowed; /* Indicate that it's not clickable */
+            pointer-events: none; /* Disable click events */
+        }
+
+        .icon {
+            width: 16px; /* Set a fixed size for the icons */
+            height: 16px; /* Set a fixed size for the icons */
+            transition: transform 0.2s ease;
+        }
+
+        .disabled-icon .icon:hover {
+            transform: none; /* Prevent scaling on hover for disabled icons */
         }
 
         /* Pagination icon styles */
-        .pagination svg {
+         .pagination svg {
             width: 16px;  /* Set the size of the icon */
             height: 16px; /* Set the height of the icon */
             margin: 0 5px;
@@ -174,6 +201,7 @@
         @php
             $isSearch = isset($searchedPosts);
             $posts = $isSearch ? $searchedPosts : $postsData;
+            $totalPosts = $isSearch ? count($searchedPosts) : $totPosts;
         @endphp
 
         <table>
@@ -215,20 +243,44 @@
 
         @if (!$isSearch)
             <div class="pagination">
-                <!-- Flipped Previous icon -->
-                <a href="{{ $postsData->previousPageUrl() }}" class="page-link" title="Previous">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-                <!-- Active page number or next page -->
-                <span>{{ $postsData->currentPage() }}</span>
-                <!-- Flipped Next icon -->
-                <a href="{{ $postsData->nextPageUrl() }}" class="page-link" title="Next">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                </a>
+                <!-- Previous Page Link -->
+                <div class="pagination-item">
+                    @if ($postsData->previousPageUrl())
+                        <a href="{{ $postsData->previousPageUrl() }}" class="page-link" title="Previous">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                    @else
+                        <span class="disabled-icon">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                    @endif
+                </div>
+
+                <!-- Current Page and Total Pages -->
+                <div class="pagination-info">
+                    <span>Page {{ $postsData->currentPage() }} of {{ $postsData->lastPage() }} (Total Posts: {{ $totalPosts }})</span>
+                </div>
+
+                <!-- Next Page Link -->
+                <div class="pagination-item">
+                    @if ($postsData->nextPageUrl())
+                        <a href="{{ $postsData->nextPageUrl() }}" class="page-link" title="Next">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                    @else
+                        <span class="disabled-icon">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                    @endif
+                </div>
             </div>
         @endif
 

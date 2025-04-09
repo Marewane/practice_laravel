@@ -12,9 +12,11 @@ class PostsController extends Controller
     public function getPosts(Request $request){
         // $query = 'select * from posts';
         // $posts = DB::select($query);
-        $posts = DB::table('posts')->paginate(2);
+        $posts = DB::table('posts')->paginate(4);
+        $totPosts = DB::table('posts')->count();
         return view('posts',[
-            'postsData'=>$posts
+            'postsData'=> $posts,
+            'totPosts' => $totPosts
         ]);
     }
 
